@@ -1,0 +1,34 @@
+<script src="jquery-3.7.0.min.js"></script>
+
+<input type="file" id="imageInput">
+<button id="sendImageButton">Send Image</button>
+
+<script>
+    $(document).ready(function () {
+        $("#sendImageButton").click(function () {
+            var fileInput = document.getElementById('imageInput');
+            var imageFile = fileInput.files[0];
+
+            var reader = new FileReader();
+            reader.onloadend = function () {
+                var imageData = reader.result;
+                sendDataToPython(imageData);
+            };
+            reader.readAsDataURL(imageFile);
+        });
+
+        function sendDataToPython(imageData) {
+            $.ajax({
+                url: "http://127.0.0.1:5000/process_image",
+                type: "POST",
+                data: { image_data: imageData },
+                success: function (response) {
+                    console.log(response);
+                },
+                error: function (error) {
+                    console.error(error);
+                }
+            });
+        }
+    });
+</script>
